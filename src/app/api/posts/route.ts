@@ -73,18 +73,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate unique filename
     const filename = `${uuidv4()}-${file.name}`
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    // Save file to public/uploads
     const uploadDir = join(process.cwd(), 'public', 'uploads')
     const filePath = join(uploadDir, filename)
     
     await writeFile(filePath, buffer)
 
-    // Create post in database - use API route for image serving
     const post = await prisma.post.create({
       data: {
         imageUrl: `/api/uploads/${filename}`,

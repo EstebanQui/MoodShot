@@ -47,11 +47,9 @@ export default function CreatePost() {
       })
 
       if (response.ok) {
-        // Reset form
         setSelectedFile(null)
         setPreview(null)
         setCaption('')
-        // Refresh the page to show new post
         window.location.reload()
       } else {
         console.error('Failed to create post')

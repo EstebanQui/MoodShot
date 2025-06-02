@@ -44,6 +44,7 @@ export default function SignUp() {
       }
     } catch (_error) {
       setError('An error occurred')
+      console.error(_error)
     } finally {
       setIsLoading(false)
     }

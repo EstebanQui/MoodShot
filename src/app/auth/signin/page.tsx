@@ -31,6 +31,7 @@ export default function SignIn() {
       }
     } catch (_error) {
       setError('An error occurred')
+      console.error(_error)
     } finally {
       setIsLoading(false)
     }

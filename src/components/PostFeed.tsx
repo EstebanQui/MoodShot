@@ -4,6 +4,29 @@ import React from 'react'
 import useSWR from 'swr'
 import PostCard from './PostCard'
 
+interface Post {
+  id: string
+  imageUrl: string
+  caption?: string
+  createdAt: string
+  user: {
+    id: string
+    username: string
+    name?: string
+    avatar?: string
+  }
+  likes: Array<{
+    id: string
+    user: {
+      id: string
+      username: string
+    }
+  }>
+  _count: {
+    likes: number
+  }
+}
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function PostFeed() {
@@ -32,7 +55,7 @@ export default function PostFeed() {
           <p className="text-gray-600">No posts yet. Create the first one!</p>
         </div>
       ) : (
-        posts.map((post: any) => (
+        posts.map((post: Post) => (
           <PostCard key={post.id} post={post} onUpdate={mutate} />
         ))
       )}

@@ -11,22 +11,18 @@ export async function GET(
     const params = await context.params
     const imagePath = params.path.join('/')
     
-    // Security check - only allow files from uploads directory
     if (!imagePath || imagePath.includes('..') || !imagePath.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
       return new NextResponse('Not Found', { status: 404 })
     }
 
     const filePath = join(process.cwd(), 'public', 'uploads', imagePath)
     
-    // Check if file exists
     if (!existsSync(filePath)) {
       return new NextResponse('Not Found', { status: 404 })
     }
 
-    // Read file
     const fileBuffer = await readFile(filePath)
     
-    // Determine content type based on file extension
     const extension = imagePath.split('.').pop()?.toLowerCase()
     let contentType = 'image/jpeg'
     

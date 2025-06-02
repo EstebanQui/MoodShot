@@ -25,7 +25,6 @@ const eslintConfig = [
   },
   {
     rules: {
-      // Relaxer quelques règles pour les fichiers générés et le développement
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "@typescript-eslint/no-empty-object-type": "warn",
