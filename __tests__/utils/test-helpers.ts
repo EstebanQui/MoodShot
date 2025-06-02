@@ -10,10 +10,16 @@ export interface TestUser {
 }
 
 export async function cleanDatabase() {
-  // Clean up in correct order to avoid foreign key constraints
-  await prisma.like.deleteMany()
-  await prisma.post.deleteMany()
-  await prisma.user.deleteMany()
+  try {
+    // Clean up in correct order to avoid foreign key constraints
+    await prisma.like.deleteMany()
+    await prisma.post.deleteMany()
+    await prisma.user.deleteMany()
+    console.log('✅ Database cleaned successfully')
+  } catch (error) {
+    console.error('❌ Error cleaning database:', error)
+    throw error
+  }
 }
 
 export async function createTestUser(overrides: Partial<TestUser> = {}): Promise<TestUser> {
@@ -49,7 +55,7 @@ export async function createTestUser(overrides: Partial<TestUser> = {}): Promise
 export async function createTestPost(userId: string, overrides: any = {}) {
   return await prisma.post.create({
     data: {
-      content: 'Test post content',
+      caption: 'Test post content',
       imageUrl: 'https://example.com/image.jpg',
       userId,
       ...overrides
@@ -63,4 +69,25 @@ export function generateUniqueEmail(): string {
 
 export function generateUniqueUsername(): string {
   return `testuser${Date.now()}${Math.random().toString(36).substring(2)}`
+}
+
+export async function waitForDatabase(maxAttempts: number = 30): Promise<void> {
+  let attempt = 1
+  
+  while (attempt <= maxAttempts) {
+    try {
+      await prisma.$queryRaw`SELECT 1`
+      console.log('✅ Database connection established')
+      return
+    } catch (error) {
+      if (attempt === maxAttempts) {
+        console.error('❌ Failed to connect to database after', maxAttempts, 'attempts')
+        throw new Error(`Database connection failed after ${maxAttempts} attempts`)
+      }
+      
+      console.log(`⏳ Database connection attempt ${attempt}/${maxAttempts}...`)
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      attempt++
+    }
+  }
 } 

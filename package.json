@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "npm run test:setup && jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:setup": "node scripts/setup-test-db.mjs",
+    "test:ci": "npm run test:setup && jest --passWithNoTests"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
