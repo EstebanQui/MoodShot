@@ -1,0 +1,67 @@
+services:
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: instagram_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: instagram_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - instagram_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Application Next.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: instagram_app
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/instagram_db?schema=public
+      - NEXTAUTH_SECRET=your-super-secret-key-change-this-in-production
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - UPLOAD_DIR=/app/public/uploads
+    ports:
+      - "3000:3000"
+    networks:
+      - instagram_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - uploads_data:/app/public/uploads
+
+  # Adminer pour la gestion de la base de données (optionnel)
+  adminer:
+    image: adminer:latest
+    container_name: instagram_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - instagram_network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  instagram_network:
+    driver: bridge 
