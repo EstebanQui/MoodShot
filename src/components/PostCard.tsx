@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
+import type { Session } from 'next-auth'
 import { Heart, MessageCircle } from 'lucide-react'
 
 interface Post {
@@ -34,7 +35,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, onUpdate }: PostCardProps) {
-  const { data: session } = useSession()
+  const { data: session } = useSession() as { data: Session | null }
   const [isLiking, setIsLiking] = useState(false)
 
   const isLiked = post.likes.some(like => like.user.id === session?.user?.id)

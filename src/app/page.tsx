@@ -1,10 +1,14 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import PostFeed from '@/components/PostFeed'
 import CreatePost from '@/components/CreatePost'
+
+type SessionUser = {
+  username: string
+}
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -16,6 +20,13 @@ export default function Home() {
       router.push('/auth/signin')
     }
   }, [session, status, router])
+
+  const handleSignOut = () => {
+    signOut({ 
+      callbackUrl: '/auth/signin',
+      redirect: true 
+    })
+  }
 
   if (status === 'loading') {
     return (
@@ -37,10 +48,10 @@ export default function Home() {
             <h1 className="text-2xl font-bold">Instagram Clone</h1>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Welcome, {session.user.username}!
+                Welcome, {(session.user as SessionUser)?.username || session.user?.name || 'User'}!
               </span>
               <button
-                onClick={() => router.push('/auth/signout')}
+                onClick={handleSignOut}
                 className="text-sm text-red-600 hover:text-red-800"
               >
                 Sign Out
