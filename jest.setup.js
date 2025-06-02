@@ -10,15 +10,14 @@ process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
 process.env.UPLOAD_DIR = './public/uploads'
 
 // Mock NextAuth
-jest.mock('next-auth/next', () => {
-  return {
-    __esModule: true,
-    default: () => ({
-      GET: jest.fn(),
-      POST: jest.fn(),
-    }),
-  }
-})
+jest.mock('next-auth/next', () => ({
+  __esModule: true,
+  default: () => ({
+    GET: jest.fn(),
+    POST: jest.fn(),
+  }),
+  getServerSession: jest.fn(),
+}))
 
 // Extend Jest matchers
 expect.extend({

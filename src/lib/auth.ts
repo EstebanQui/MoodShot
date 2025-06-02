@@ -15,7 +15,10 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
+        console.log('Authorize called with:', credentials)
+        
         if (!credentials?.email || !credentials?.password) {
+          console.log('Missing credentials')
           return null
         }
 
@@ -25,7 +28,10 @@ export const authOptions = {
           }
         })
 
+        console.log('Found user:', user ? { id: user.id, email: user.email } : null)
+
         if (!user) {
+          console.log('User not found')
           return null
         }
 
@@ -34,16 +40,22 @@ export const authOptions = {
           user.password
         )
 
+        console.log('Password valid:', isPasswordValid)
+
         if (!isPasswordValid) {
+          console.log('Invalid password')
           return null
         }
 
-        return {
+        const result = {
           id: user.id,
           email: user.email,
           name: user.name,
           username: user.username,
         }
+        
+        console.log('Returning user:', result)
+        return result
       }
     })
   ],
