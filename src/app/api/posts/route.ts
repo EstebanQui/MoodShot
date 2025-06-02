@@ -84,10 +84,10 @@ export async function POST(request: NextRequest) {
     
     await writeFile(filePath, buffer)
 
-    // Create post in database
+    // Create post in database - use API route for image serving
     const post = await prisma.post.create({
       data: {
-        imageUrl: `/uploads/${filename}`,
+        imageUrl: `/api/uploads/${filename}`,
         caption: caption || null,
         userId: session.user.id
       },

@@ -2,9 +2,9 @@
 
 # Attendre que la base de données soit prête
 echo "Waiting for database to be ready..."
-until nc -z postgres 5432; do
+until PGPASSWORD=password psql -h postgres -U postgres -d instagram_db -c '\q' 2>/dev/null; do
   echo "Database is unavailable - sleeping"
-  sleep 1
+  sleep 2
 done
 echo "Database is up - executing command"
 

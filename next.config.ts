@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  outputFileTracingRoot: process.cwd(),
   serverExternalPackages: ['@prisma/client', 'bcryptjs'],
   images: {
     remotePatterns: [
@@ -9,7 +10,7 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         port: '3000',
-        pathname: '/uploads/**',
+        pathname: '/api/uploads/**',
       },
     ],
   },
