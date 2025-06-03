@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'test') {
         }
       }
     })
-  } catch (error) {
+  } catch {
     // Silently fail if .env.test doesn't exist
     // In CI environments, environment variables are set directly
   }

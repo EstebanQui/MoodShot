@@ -10,7 +10,6 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     ignores: [
       "**/node_modules/**",
@@ -21,13 +20,21 @@ const eslintConfig = [
       "**/prisma/generated/**",
       "**/*.config.js",
       "**/*.config.mjs",
+      "**/coverage/**",
+      "**/.swc/**"
     ]
   },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    files: ["**/*.{js,jsx,ts,tsx}"],
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+      "@typescript-eslint/no-unused-vars": ["warn", { 
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }],
       "@typescript-eslint/no-empty-object-type": "warn",
+      "@next/next/no-img-element": "warn",
     }
   }
 ];

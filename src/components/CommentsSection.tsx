@@ -66,8 +66,11 @@ export default function CommentsSection({ postId, isOpen, onClose }: CommentsSec
         // Handle both response formats for compatibility
         setComments(data.comments || data || [])
       }
-    } catch (error: any) {
-      if (error.name !== 'AbortError' && isMountedRef.current) {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name !== 'AbortError' && isMountedRef.current) {
+        console.error('Error fetching comments:', error)
+        setError('Failed to load comments')
+      } else if (!(error instanceof Error) && isMountedRef.current) {
         console.error('Error fetching comments:', error)
         setError('Failed to load comments')
       }
@@ -139,10 +142,11 @@ export default function CommentsSection({ postId, isOpen, onClose }: CommentsSec
         setComments(prev => [data.comment, ...prev])
         setNewComment('')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (isMountedRef.current) {
         console.error('Error posting comment:', error)
-        setError(error.message || 'Failed to post comment')
+        const errorMessage = error instanceof Error ? error.message : 'Failed to post comment'
+        setError(errorMessage)
       }
     } finally {
       if (isMountedRef.current) {
