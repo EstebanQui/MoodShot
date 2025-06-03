@@ -84,4 +84,4 @@ ENV HOSTNAME="0.0.0.0"
 ENTRYPOINT ["/sbin/tini", "--"]
 
 # Execute the start script
-CMD ["/usr/local/bin/start.sh"] CMD ["/usr/local/bin/start.sh"]
+CMD ["/usr/local/bin/start.sh"]
