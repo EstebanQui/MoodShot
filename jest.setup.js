@@ -3,11 +3,28 @@ import { jest } from '@jest/globals'
 
 // Set test environment variables
 process.env.NODE_ENV = 'test'
-process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
+
+// Smart environment detection for DATABASE_URL
+const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+
+if (!process.env.DATABASE_URL) {
+  if (isCI) {
+    // GitHub Actions uses port 5432
+    process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public'
+    console.log('🔍 Jest setup: Detected CI environment, using port 5432')
+  } else {
+    // Local development uses port 5433
+    process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
+    console.log('🔍 Jest setup: Detected local environment, using port 5433')
+  }
+}
+
 process.env.NEXTAUTH_SECRET = 'test-secret-key-for-testing'
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
 process.env.UPLOAD_DIR = './public/uploads'
+
+console.log('🔗 Jest setup DATABASE_URL:', process.env.DATABASE_URL.replace(/:[^:]*@/, ':***@'))
 
 // Mock NextAuth
 jest.mock('next-auth/next', () => ({
