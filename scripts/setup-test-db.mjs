@@ -1,5 +1,6 @@
 import { PrismaClient } from '../src/generated/prisma/index.js'
-import { config } from 'dotenv'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
 // Set test environment variables explicitly
 process.env.NODE_ENV = 'test'
@@ -7,9 +8,29 @@ process.env.NODE_ENV = 'test'
 // Clear any existing DATABASE_URL to ensure we read from .env.test
 delete process.env.DATABASE_URL
 
-// Load environment variables from .env.test
-const envResult = config({ path: '.env.test' })
-console.log('📁 Loaded .env.test:', envResult.parsed ? 'SUCCESS' : 'FAILED')
+// Load environment variables from .env.test manually
+try {
+  const envPath = resolve('.env.test')
+  const envContent = readFileSync(envPath, 'utf8')
+  
+  // Parse the .env file
+  const envVars = {}
+  envContent.split('\n').forEach(line => {
+    const trimmedLine = line.trim()
+    if (trimmedLine && !trimmedLine.startsWith('#')) {
+      const [key, ...valueParts] = trimmedLine.split('=')
+      if (key && valueParts.length > 0) {
+        const value = valueParts.join('=').replace(/^["']|["']$/g, '') // Remove quotes
+        envVars[key.trim()] = value
+        process.env[key.trim()] = value
+      }
+    }
+  })
+  
+  console.log('📁 Loaded .env.test:', Object.keys(envVars).length > 0 ? 'SUCCESS' : 'FAILED')
+} catch (error) {
+  console.log('📁 Could not load .env.test file:', error.message)
+}
 
 // Read DATABASE_URL from environment or use fallback
 const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
