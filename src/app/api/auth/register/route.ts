@@ -4,16 +4,45 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
 const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(1),
-  username: z.string().min(1)
+  email: z.string({
+    required_error: 'Email is required',
+    invalid_type_error: 'Email must be a string'
+  }).email('Invalid email format'),
+  password: z.string({
+    required_error: 'Password must be at least 6 characters long',
+    invalid_type_error: 'Password must be a string'
+  }).min(6, 'Password must be at least 6 characters long'),
+  name: z.string({
+    required_error: 'Name is required',
+    invalid_type_error: 'Name must be a string'
+  }).min(1, 'Name is required'),
+  username: z.string({
+    required_error: 'Username is required',
+    invalid_type_error: 'Username must be a string'
+  }).min(1, 'Username is required')
 })
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, password, name, username } = registerSchema.parse(body)
+    
+    // Validate the request body
+    const validation = registerSchema.safeParse(body)
+    
+    if (!validation.success) {
+      return NextResponse.json(
+        { 
+          error: 'Validation failed',
+          details: validation.error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }))
+        },
+        { status: 400 }
+      )
+    }
+    
+    const { email, password, name, username } = validation.data
 
     const existingUser = await prisma.user.findFirst({
       where: {

@@ -1,5 +1,7 @@
 // Jest setup file
 import { jest } from '@jest/globals'
+import { mkdirSync, existsSync } from 'fs'
+import { join } from 'path'
 
 // Set test environment variables
 process.env.NODE_ENV = 'test'
@@ -25,6 +27,13 @@ process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
 process.env.UPLOAD_DIR = './public/uploads'
 
 console.log('🔗 Jest setup DATABASE_URL:', process.env.DATABASE_URL.replace(/:[^:]*@/, ':***@'))
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = join(process.cwd(), 'public', 'uploads')
+if (!existsSync(uploadsDir)) {
+  mkdirSync(uploadsDir, { recursive: true })
+  console.log('📁 Created uploads directory:', uploadsDir)
+}
 
 // Mock NextAuth
 jest.mock('next-auth/next', () => ({

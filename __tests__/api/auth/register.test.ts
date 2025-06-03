@@ -66,8 +66,17 @@ describe('/api/auth/register', () => {
       const response = await POST(req as any)
       const responseData = await response.json()
 
-      expect(response.status).toBe(500) // Zod validation error will cause 500
+      expect(response.status).toBe(400)
       expect(responseData).toHaveProperty('error')
+      expect(responseData.error).toBe('Validation failed')
+      expect(responseData.details).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            field: 'email',
+            message: 'Invalid email format'
+          })
+        ])
+      )
     })
 
     it('should reject registration with short password', async () => {
@@ -88,8 +97,17 @@ describe('/api/auth/register', () => {
       const response = await POST(req as any)
       const responseData = await response.json()
 
-      expect(response.status).toBe(500) // Zod validation error
+      expect(response.status).toBe(400)
       expect(responseData).toHaveProperty('error')
+      expect(responseData.error).toBe('Validation failed')
+      expect(responseData.details).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            field: 'password',
+            message: 'Password must be at least 6 characters long'
+          })
+        ])
+      )
     })
 
     it('should reject registration with duplicate email', async () => {
@@ -211,8 +229,25 @@ describe('/api/auth/register', () => {
       const response = await POST(req as any)
       const responseData = await response.json()
 
-      expect(response.status).toBe(500) // Zod validation error
+      expect(response.status).toBe(400)
       expect(responseData).toHaveProperty('error')
+      expect(responseData.error).toBe('Validation failed')
+      expect(responseData.details).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            field: 'password',
+            message: 'Password must be at least 6 characters long'
+          }),
+          expect.objectContaining({
+            field: 'name',
+            message: 'Name is required'
+          }),
+          expect.objectContaining({
+            field: 'username',
+            message: 'Username is required'
+          })
+        ])
+      )
     })
   })
 }) 
