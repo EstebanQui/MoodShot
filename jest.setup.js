@@ -3,7 +3,7 @@ import { jest } from '@jest/globals'
 
 // Set test environment variables
 process.env.NODE_ENV = 'test'
-process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public'
+process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
 process.env.NEXTAUTH_SECRET = 'test-secret-key-for-testing'
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'

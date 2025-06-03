@@ -1,4 +1,10 @@
 import { PrismaClient } from '../generated/prisma'
+import { config } from 'dotenv'
+
+// Load test environment variables if in test mode
+if (process.env.NODE_ENV === 'test') {
+  config({ path: '.env.test' })
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
