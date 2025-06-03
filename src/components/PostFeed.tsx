@@ -24,6 +24,7 @@ interface Post {
   }>
   _count: {
     likes: number
+    comments: number
   }
 }
 

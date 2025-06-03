@@ -33,7 +33,8 @@ export async function GET() {
         },
         _count: {
           select: {
-            likes: true
+            likes: true,
+            comments: true
           }
         }
       },
@@ -100,7 +101,8 @@ export async function POST(request: NextRequest) {
         },
         _count: {
           select: {
-            likes: true
+            likes: true,
+            comments: true
           }
         }
       }
