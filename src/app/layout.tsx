@@ -6,8 +6,8 @@ import { NextAuthProvider } from '@/components/providers/NextAuthProvider'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Instagram Clone",
-  description: "A simple Instagram clone built with Next.js, Prisma, and PostgreSQL",
+  title: "MoodShot",
+  description: "A simple MoodShot built with Next.js, Prisma, and PostgreSQL",
 };
 
 export default function RootLayout({

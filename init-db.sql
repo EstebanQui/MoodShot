@@ -1,4 +1,4 @@
--- Script d'initialisation de la base de données Instagram Clone
+-- Script d'initialisation de la base de données MoodShot
 -- Ce script est exécuté automatiquement lors du premier démarrage de PostgreSQL
 
 -- Créer la base de données si elle n'existe pas déjà
@@ -10,5 +10,5 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Afficher un message de confirmation
 DO $$
 BEGIN
-    RAISE NOTICE 'Base de données Instagram Clone initialisée avec succès!';
+    RAISE NOTICE 'Base de données MoodShot initialisée avec succès!';
 END $$; 

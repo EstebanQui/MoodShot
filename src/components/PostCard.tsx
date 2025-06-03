@@ -142,14 +142,6 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
             </button>
           )}
 
-          {/* Caption */}
-          {post.caption && (
-            <p className="text-sm">
-              <span className="font-medium">{post.user.username}</span>{' '}
-              {post.caption}
-            </p>
-          )}
-
           {/* Timestamp */}
           <p className="text-xs text-gray-500 mt-2">
             {new Date(post.createdAt).toLocaleDateString()}

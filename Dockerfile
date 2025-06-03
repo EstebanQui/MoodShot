@@ -1,4 +1,4 @@
-# Dockerfile pour l'application Instagram Clone
+# Dockerfile pour l'application MoodShot
 ARG NODE_VERSION=22
 
 FROM node:${NODE_VERSION}-alpine AS base
@@ -82,4 +82,6 @@ ENV HOSTNAME="0.0.0.0"
 
 # Use tini as entrypoint for proper signal handling
 ENTRYPOINT ["/sbin/tini", "--"]
+
+# Execute the start script
 CMD ["/usr/local/bin/start.sh"] 

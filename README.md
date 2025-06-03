@@ -1,4 +1,4 @@
-# Instagram Clone - Projet Docker
+# MoodShot - Projet Docker
 
 Une application web Instagram-like construite avec Next.js, React, TypeScript, Prisma, PostgreSQL et dockerisée avec Docker Compose.
 

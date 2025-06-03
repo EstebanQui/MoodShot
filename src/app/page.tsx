@@ -45,7 +45,7 @@ export default function Home() {
       <header className="bg-white border-b border-gray-300 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Instagram Clone</h1>
+            <h1 className="text-2xl font-bold">MoodShot</h1>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
                 Welcome, {(session.user as SessionUser)?.username || session.user?.name || 'User'}!
