@@ -14,4 +14,4 @@ npx prisma migrate deploy
 
 # Démarrer l'application
 echo "Starting the application..."
-exec node server.js 
+exec node server.js exec node server.js
