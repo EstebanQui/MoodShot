@@ -39,19 +39,18 @@ jobs:
         node-version: '22'
         cache: 'npm'
 
+    - name: Create .env.test file
+      run: |
+        echo "NODE_ENV=test" > .env.test
+        echo "DATABASE_URL=postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public" >> .env.test
+        echo "NEXTAUTH_SECRET=test-secret-key-for-testing" >> .env.test
+        echo "NEXTAUTH_URL=http://localhost:3000" >> .env.test
+        echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> .env.test
+        echo "UPLOAD_DIR=./public/uploads" >> .env.test
+        cat .env.test
+
     - name: Install dependencies
       run: npm ci
-
-    - name: Setup test environment
-      run: |
-        echo "Setting up test environment..."
-        export DATABASE_URL="postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public"
-        export NEXTAUTH_SECRET="test-secret"
-        export NEXTAUTH_URL="http://localhost:3000"
-      env:
-        DATABASE_URL: postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public
-        NEXTAUTH_SECRET: test-secret
-        NEXTAUTH_URL: http://localhost:3000
 
     - name: Generate Prisma client
       run: npx prisma generate
@@ -66,9 +65,12 @@ jobs:
     - name: Run tests
       run: npm test
       env:
+        NODE_ENV: test
         DATABASE_URL: postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public
-        NEXTAUTH_SECRET: test-secret
+        NEXTAUTH_SECRET: test-secret-key-for-testing
         NEXTAUTH_URL: http://localhost:3000
+        NEXT_PUBLIC_APP_URL: http://localhost:3000
+        UPLOAD_DIR: ./public/uploads
 
     - name: Run linting
       run: npm run lint --if-present
@@ -77,8 +79,9 @@ jobs:
       run: npm run build
       env:
         DATABASE_URL: postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public
-        NEXTAUTH_SECRET: test-secret
+        NEXTAUTH_SECRET: test-secret-key-for-testing
         NEXTAUTH_URL: http://localhost:3000
+        NEXT_PUBLIC_APP_URL: http://localhost:3000
 
   build-and-push:
     needs: test
@@ -137,5 +140,4 @@ jobs:
       run: |
         echo "🚀 Deployment would happen here"
         echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
-        echo "This is where you would deploy to your production environment"
-        echo "✅ Tests passed: User registration, authentication, and post creation" 
+        echo "This is where you would deploy to your production environment" 

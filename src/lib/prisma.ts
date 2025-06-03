@@ -15,12 +15,26 @@ if (process.env.NODE_ENV === 'test') {
         const [key, ...valueParts] = trimmedLine.split('=')
         if (key && valueParts.length > 0) {
           const value = valueParts.join('=').replace(/^["']|["']$/g, '') // Remove quotes
-          process.env[key.trim()] = value
+          // Only set if not already set (prioritize environment variables)
+          if (!process.env[key.trim()]) {
+            process.env[key.trim()] = value
+          }
         }
       }
     })
   } catch (error) {
     // Silently fail if .env.test doesn't exist
+    // In CI environments, environment variables are set directly
+  }
+  
+  // Smart fallback for DATABASE_URL in test mode
+  if (!process.env.DATABASE_URL) {
+    const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+    if (isCI) {
+      process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public'
+    } else {
+      process.env.DATABASE_URL = 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
+    }
   }
 }
 

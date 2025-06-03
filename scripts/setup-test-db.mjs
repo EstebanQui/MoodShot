@@ -30,10 +30,26 @@ try {
   console.log('📁 Loaded .env.test:', Object.keys(envVars).length > 0 ? 'SUCCESS' : 'FAILED')
 } catch (error) {
   console.log('📁 Could not load .env.test file:', error.message)
+  console.log('🔄 Fallback: Using environment variables from CI/CD or system')
 }
 
-// Read DATABASE_URL from environment or use fallback
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
+// Determine DATABASE_URL with smart fallback logic
+let DATABASE_URL = process.env.DATABASE_URL
+
+if (!DATABASE_URL) {
+  // Check if we're in GitHub Actions (CI environment)
+  const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+  
+  if (isCI) {
+    // GitHub Actions uses port 5432
+    DATABASE_URL = 'postgresql://postgres:password@localhost:5432/instagram_db_test?schema=public'
+    console.log('🔍 Detected CI environment, using port 5432')
+  } else {
+    // Local development uses port 5433
+    DATABASE_URL = 'postgresql://postgres:password@localhost:5433/instagram_db_test?schema=public'
+    console.log('🔍 Detected local environment, using port 5433')
+  }
+}
 
 console.log('🔗 Using DATABASE_URL:', DATABASE_URL.replace(/:[^:]*@/, ':***@'))
 
@@ -69,6 +85,7 @@ async function setupTestDatabase() {
     console.log('2. Check if PostgreSQL container is healthy: docker exec -it instagram_postgres pg_isready -U postgres')
     console.log('3. Verify database exists: docker exec -it instagram_postgres psql -U postgres -l')
     console.log('4. Current DATABASE_URL:', DATABASE_URL.replace(/:[^:]*@/, ':***@'))
+    console.log('5. Environment:', process.env.CI === 'true' ? 'CI/CD' : 'Local')
     
     process.exit(1)
   } finally {
