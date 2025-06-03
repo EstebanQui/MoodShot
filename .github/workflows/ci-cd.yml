@@ -150,7 +150,7 @@ jobs:
         id: meta-dockerhub
         uses: docker/metadata-action@v5
         with:
-          images: votre-nom-utilisateur-dockerhub/moodshot
+          images: esteban028/moodshot
           tags: |
             type=ref,event=branch
             type=ref,event=pr
